@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raidcore Dungeon Leveling Signup</title>
+    <title>Raidcore Dungeon Leveling</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         * {
@@ -23,15 +23,14 @@
             --text-muted: #8a8578;
             --red-accent: #8b1a1a;
             --border-subtle: #333;
+            --green: #27ae60;
+            --orange: #e67e22;
         }
 
         body {
             font-family: 'Crimson Text', Georgia, serif;
             background: var(--bg-dark);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
             background-image: 
                 radial-gradient(ellipse at top, rgba(201, 162, 39, 0.05) 0%, transparent 50%),
@@ -39,8 +38,8 @@
         }
 
         .container {
-            width: 100%;
-            max-width: 480px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .header {
@@ -87,35 +86,103 @@
             font-size: 1.2rem;
         }
 
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 30px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--gold-dark);
+            color: var(--text-light);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            color: var(--bg-dark);
+            border-color: var(--gold);
+        }
+
+        /* Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form Card */
         .form-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 4px;
-            padding: 35px;
-            box-shadow: 
-                0 4px 20px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            height: fit-content;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .form-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
             font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--gold);
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         input, select {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 14px;
             font-family: 'Crimson Text', Georgia, serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--text-light);
             background: var(--bg-input);
             border: 1px solid var(--border-subtle);
@@ -130,38 +197,28 @@
             box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.1);
         }
 
-        input::placeholder {
-            color: var(--text-muted);
-        }
-
         select {
             cursor: pointer;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8578' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 40px;
-        }
-
-        select option {
-            background: var(--bg-input);
-            color: var(--text-light);
-            padding: 10px;
+            background-position: right 14px center;
+            padding-right: 36px;
         }
 
         .time-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 16px;
-            margin-top: 10px;
+            padding: 14px;
+            margin-top: 8px;
             font-family: 'Cinzel', serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--bg-dark);
             background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
@@ -169,20 +226,12 @@
             border-radius: 3px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 
-                0 4px 15px rgba(201, 162, 39, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(201, 162, 39, 0.3);
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 
-                0 6px 25px rgba(201, 162, 39, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
+            box-shadow: 0 6px 25px rgba(201, 162, 39, 0.4);
         }
 
         .submit-btn:disabled {
@@ -194,10 +243,10 @@
 
         .status-message {
             text-align: center;
-            padding: 15px;
-            margin-top: 20px;
+            padding: 12px;
+            margin-top: 15px;
             border-radius: 3px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             display: none;
         }
 
@@ -215,24 +264,141 @@
             color: #e74c3c;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 25px;
+        /* Results Panel */
+        .results-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .refresh-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            padding: 8px 16px;
+            background: var(--bg-input);
             color: var(--text-muted);
-            font-size: 0.85rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--gold-dark);
+            color: var(--text-light);
+        }
+
+        /* Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .results-table td {
+            padding: 14px 10px;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.95rem;
+        }
+
+        .results-table tr:hover {
+            background: rgba(201, 162, 39, 0.05);
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .status-searching {
+            background: rgba(230, 126, 34, 0.2);
+            border: 1px solid var(--orange);
+            color: var(--orange);
+        }
+
+        .status-found {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* Class colors */
+        .class-warrior { color: #C79C6E; }
+        .class-paladin { color: #F58CBA; }
+        .class-hunter { color: #ABD473; }
+        .class-rogue { color: #FFF569; }
+        .class-priest { color: #FFFFFF; }
+        .class-shaman { color: #0070DE; }
+        .class-mage { color: #69CCF0; }
+        .class-warlock { color: #9482C9; }
+        .class-druid { color: #FF7D0A; }
+
+        .no-data {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px;
             font-style: italic;
         }
 
-        /* Loading spinner */
+        .loading {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px;
+        }
+
         .spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--bg-dark);
-            border-top-color: transparent;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-subtle);
+            border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-right: 8px;
+            margin-right: 10px;
             vertical-align: middle;
         }
 
@@ -240,26 +406,20 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Subtle ambient animation */
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-style: italic;
         }
 
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        .form-card {
-            position: relative;
+        /* Responsive table */
+        @media (max-width: 700px) {
+            .results-table th:nth-child(5),
+            .results-table td:nth-child(5) {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -273,78 +433,91 @@
             </div>
         </header>
 
-        <form id="signupForm" class="form-card">
-            <div class="form-group">
-                <label for="character">Character Name</label>
-                <input type="text" id="character" name="character" placeholder="Enter your character name" required>
-            </div>
+        <div class="tabs">
+            <button class="tab-btn active" data-day="Friday">Friday</button>
+            <button class="tab-btn" data-day="Saturday">Saturday</button>
+            <button class="tab-btn" data-day="Sunday">Sunday</button>
+        </div>
 
-            <div class="form-group">
-                <label for="playerClass">Class</label>
-                <select id="playerClass" name="playerClass" required>
-                    <option value="">Select your class</option>
-                    <option value="Warrior">Warrior</option>
-                    <option value="Paladin">Paladin</option>
-                    <option value="Hunter">Hunter</option>
-                    <option value="Rogue">Rogue</option>
-                    <option value="Priest">Priest</option>
-                    <option value="Shaman">Shaman</option>
-                    <option value="Mage">Mage</option>
-                    <option value="Warlock">Warlock</option>
-                    <option value="Druid">Druid</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="role">Role</label>
-                <select id="role" name="role" required>
-                    <option value="">Select your role</option>
-                    <option value="Tank">Tank</option>
-                    <option value="Healer">Healer</option>
-                    <option value="DPS">DPS</option>
-                    <option value="Tank / DPS">Tank / DPS</option>
-                    <option value="Healer / DPS">Healer / DPS</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="day">Start Day</label>
-                <select id="day" name="day" required>
-                    <option value="">Select a day</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
-            </div>
-
-            <div class="time-row">
+        <div class="main-content">
+            <form id="signupForm" class="form-card">
+                <h2 class="form-title">Sign Up</h2>
+                
                 <div class="form-group">
-                    <label for="startHour">Start Time</label>
-                    <select id="startHour" name="startHour" required>
-                        <option value="">Start</option>
+                    <label for="character">Character Name</label>
+                    <input type="text" id="character" name="character" placeholder="Enter character name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="playerClass">Class</label>
+                    <select id="playerClass" name="playerClass" required>
+                        <option value="">Select class</option>
+                        <option value="Warrior">Warrior</option>
+                        <option value="Paladin">Paladin</option>
+                        <option value="Hunter">Hunter</option>
+                        <option value="Rogue">Rogue</option>
+                        <option value="Priest">Priest</option>
+                        <option value="Shaman">Shaman</option>
+                        <option value="Mage">Mage</option>
+                        <option value="Warlock">Warlock</option>
+                        <option value="Druid">Druid</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="endHour">End Time</label>
-                    <select id="endHour" name="endHour" required>
-                        <option value="">End</option>
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select role</option>
+                        <option value="Tank">Tank</option>
+                        <option value="Healer">Healer</option>
+                        <option value="DPS">DPS</option>
+                        <option value="Tank / DPS">Tank / DPS</option>
+                        <option value="Healer / DPS">Healer / DPS</option>
                     </select>
                 </div>
+
+                <div class="time-row">
+                    <div class="form-group">
+                        <label for="startHour">Available From</label>
+                        <select id="startHour" name="startHour" required>
+                            <option value="">Start</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endHour">Until</label>
+                        <select id="endHour" name="endHour" required>
+                            <option value="">End</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+                <div id="statusMessage" class="status-message"></div>
+            </form>
+
+            <div class="results-panel">
+                <div class="results-header">
+                    <h2 class="results-title"><span id="dayTitle">Friday</span> Signups</h2>
+                    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+                </div>
+                
+                <div id="resultsContainer">
+                    <div class="loading"><span class="spinner"></span>Loading signups...</div>
+                </div>
             </div>
+        </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">
-                Submit Signup
-            </button>
-
-            <div id="statusMessage" class="status-message"></div>
-        </form>
-
-        <p class="footer">For the Horde. For the Alliance. For Raidcore.</p>
+        <p class="footer">Click on a player's status to toggle between Searching and Found Group</p>
     </div>
 
     <script>
-        // Populate time dropdowns (00:00 to 23:30 in 30-min intervals)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_0xAPvcWLnE92W2gvVKsku4E97bSaMs310eq_8Ii_z3M4ckzsWBYyxQhcoyWCzZ-B/exec';
+        
+        let currentDay = 'Friday';
+        let allData = {};
+
+        // Populate time dropdowns
         const startHourSelect = document.getElementById('startHour');
         const endHourSelect = document.getElementById('endHour');
 
@@ -356,19 +529,137 @@
             }
         }
 
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentDay = btn.dataset.day;
+                document.getElementById('dayTitle').textContent = currentDay;
+                renderResults();
+            });
+        });
+
+        // Load data
+        async function loadData() {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '<div class="loading"><span class="spinner"></span>Loading signups...</div>';
+            
+            try {
+                // Using JSONP-style fetch since we can't read no-cors responses
+                // We'll use an iframe trick or just show cached data
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'GET',
+                    mode: 'cors',
+                });
+                allData = await response.json();
+                renderResults();
+            } catch (error) {
+                // If CORS fails, show message
+                container.innerHTML = '<div class="no-data">Unable to load data. Submit a signup and refresh to see results.</div>';
+            }
+        }
+
+        // Render results table
+        function renderResults() {
+            const container = document.getElementById('resultsContainer');
+            const dayData = allData[currentDay];
+
+            if (!dayData || dayData.length <= 1) {
+                container.innerHTML = '<div class="no-data">No signups yet for ' + currentDay + '</div>';
+                return;
+            }
+
+            let html = `
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Character</th>
+                            <th>Class</th>
+                            <th>Role</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            // Skip header row (index 0)
+            for (let i = 1; i < dayData.length; i++) {
+                const row = dayData[i];
+                const character = row[1] || '';
+                const playerClass = row[2] || '';
+                const role = row[3] || '';
+                const start = row[4] || '';
+                const end = row[5] || '';
+                const status = row[6] || 'Searching';
+
+                const classColor = 'class-' + playerClass.toLowerCase();
+                const statusClass = status === 'Found Group' ? 'status-found' : 'status-searching';
+
+                html += `
+                    <tr>
+                        <td>${character}</td>
+                        <td class="${classColor}">${playerClass}</td>
+                        <td>${role}</td>
+                        <td>${start} - ${end}</td>
+                        <td>
+                            <span class="status-badge ${statusClass}" 
+                                  onclick="toggleStatus('${character}', '${currentDay}', '${status}')"
+                                  title="Click to change status">
+                                ${status === 'Found Group' ? 'Found' : 'Searching'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Toggle status
+        async function toggleStatus(character, day, currentStatus) {
+            const newStatus = currentStatus === 'Found Group' ? 'Searching' : 'Found Group';
+            
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'updateStatus',
+                        character: character,
+                        day: day,
+                        status: newStatus
+                    })
+                });
+
+                // Update local data and re-render
+                const dayData = allData[day];
+                for (let i = 1; i < dayData.length; i++) {
+                    if (dayData[i][1] === character) {
+                        dayData[i][6] = newStatus;
+                        break;
+                    }
+                }
+                renderResults();
+
+            } catch (error) {
+                alert('Failed to update status. Please refresh and try again.');
+            }
+        }
+
         // Form submission
         const form = document.getElementById('signupForm');
         const submitBtn = document.getElementById('submitBtn');
         const statusMessage = document.getElementById('statusMessage');
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_0xAPvcWLnE92W2gvVKsku4E97bSaMs310eq_8Ii_z3M4ckzsWBYyxQhcoyWCzZ-B/exec';
-
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Disable button and show loading
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Submitting...';
+            submitBtn.innerHTML = '<span class="spinner"></span>';
             statusMessage.className = 'status-message';
             statusMessage.style.display = 'none';
 
@@ -376,26 +667,35 @@
                 character: document.getElementById('character').value,
                 playerClass: document.getElementById('playerClass').value,
                 role: document.getElementById('role').value,
-                day: document.getElementById('day').value,
+                day: currentDay,
                 startHour: document.getElementById('startHour').value,
                 endHour: document.getElementById('endHour').value
             };
 
             try {
-                const response = await fetch(SCRIPT_URL, {
+                await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
 
-                // With no-cors, we can't read the response, so assume success
-                statusMessage.textContent = `Thanks ${formData.character}! Your signup for ${formData.day} has been submitted.`;
+                statusMessage.textContent = `${formData.character} signed up for ${currentDay}!`;
                 statusMessage.className = 'status-message success';
                 
-                // Reset form
+                // Add to local data for immediate display
+                if (!allData[currentDay]) allData[currentDay] = [['Timestamp', 'Character', 'Class', 'Role', 'Start', 'End', 'Status']];
+                allData[currentDay].push([
+                    new Date().toISOString(),
+                    formData.character,
+                    formData.playerClass,
+                    formData.role,
+                    formData.startHour,
+                    formData.endHour,
+                    'Searching'
+                ]);
+                renderResults();
+                
                 form.reset();
                 
             } catch (error) {
@@ -403,10 +703,15 @@
                 statusMessage.className = 'status-message error';
             }
 
-            // Re-enable button
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Submit Signup';
+            submitBtn.innerHTML = 'Submit';
         });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+        // Initial load
+        loadData();
     </script>
 </body>
 </html>
