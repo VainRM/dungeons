@@ -25,7 +25,6 @@
             --green: #27ae60;
             --orange: #e67e22;
             
-            /* TBC Class Colors */
             --warrior: #C79C6E;
             --paladin: #F58CBA;
             --hunter: #ABD473;
@@ -96,7 +95,6 @@
             font-size: 1.2rem;
         }
 
-        /* Tabs */
         .tabs {
             display: flex;
             justify-content: center;
@@ -130,7 +128,6 @@
             border-color: var(--gold);
         }
 
-        /* Layout */
         .main-content {
             display: grid;
             grid-template-columns: 350px 1fr;
@@ -143,7 +140,6 @@
             }
         }
 
-        /* Form Card */
         .form-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
@@ -188,16 +184,6 @@
             margin-bottom: 6px;
         }
 
-        .label-hint {
-            font-family: 'Crimson Text', serif;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-style: italic;
-            letter-spacing: 0;
-            text-transform: none;
-            margin-left: 8px;
-        }
-
         input, select {
             width: 100%;
             padding: 12px 14px;
@@ -215,10 +201,6 @@
             outline: none;
             border-color: var(--gold-dark);
             box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.1);
-        }
-
-        input:invalid:not(:placeholder-shown) {
-            border-color: #e74c3c;
         }
 
         select {
@@ -241,13 +223,8 @@
             margin-top: 4px;
         }
 
-        .char-count.warning {
-            color: var(--orange);
-        }
-
-        .char-count.error {
-            color: #e74c3c;
-        }
+        .char-count.warning { color: var(--orange); }
+        .char-count.error { color: #e74c3c; }
 
         .time-row {
             display: grid;
@@ -308,7 +285,6 @@
             color: #e74c3c;
         }
 
-        /* Results Panel */
         .results-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
@@ -349,7 +325,6 @@
             color: var(--text-light);
         }
 
-        /* Bucket sections */
         .bucket {
             margin-bottom: 30px;
         }
@@ -390,7 +365,6 @@
             font-size: 0.75rem;
         }
 
-        /* Table */
         .results-table {
             width: 100%;
             border-collapse: collapse;
@@ -422,7 +396,6 @@
             border-bottom: none;
         }
 
-        /* Class badges */
         .class-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -444,7 +417,6 @@
         .class-warlock { background: rgba(148, 130, 201, 0.2); border: 1px solid var(--warlock); color: var(--warlock); }
         .class-druid { background: rgba(255, 125, 10, 0.2); border: 1px solid var(--druid); color: var(--druid); }
 
-        /* Role icons */
         .role-cell {
             display: flex;
             align-items: center;
@@ -455,7 +427,6 @@
             font-size: 1.1rem;
         }
 
-        /* Status badges */
         .status-badge {
             display: inline-block;
             padding: 5px 12px;
@@ -521,7 +492,6 @@
             font-style: italic;
         }
 
-        /* Responsive table */
         @media (max-width: 700px) {
             .results-table th:nth-child(4),
             .results-table td:nth-child(4) {
@@ -529,7 +499,6 @@
             }
         }
 
-        /* Confirmation modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -673,14 +642,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Guild Password <span class="label-hint">(ask in Discord)</span></label>
-                    <input type="password" id="password" name="password" 
-                           placeholder="Enter guild password" 
-                           required 
-                           autocomplete="off">
-                </div>
-
                 <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
                 <div id="statusMessage" class="status-message"></div>
             </form>
@@ -700,7 +661,6 @@
         <p class="footer">Click on your status to toggle between Searching and Found Group</p>
     </div>
 
-    <!-- Confirmation Modal -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal">
             <h3>⚠️ Confirm Status Change</h3>
@@ -714,6 +674,8 @@
     </div>
 
     <script>
+        // SECRET KEY - This is the auth
+        const SECRET_KEY = 'raidcore2026';
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoITOviqZBlTCvYpTKg0DsfYdDHWO7GJ0RbSzsna-CdmRfznrM-WS0Q1NDygirqD_BQg/exec';
         
         let currentDay = 'Friday';
@@ -733,7 +695,6 @@
             'Druid':    ['Tank', 'Healer', 'DPS', 'Tank / DPS', 'Healer / DPS', 'Tank / Healer', 'Tank / Healer / DPS']
         };
 
-        // Utility: Sanitize string for safe HTML display
         function sanitize(str) {
             if (!str) return '';
             const div = document.createElement('div');
@@ -741,28 +702,21 @@
             return div.innerHTML;
         }
 
-        // Utility: Validate character name
         function isValidCharName(name) {
             if (!name || name.length > 24) return false;
             return /^[A-Za-z0-9\s\-]+$/.test(name);
         }
 
-        // Utility: Validate class/role combo
         function isValidClassRole(playerClass, role) {
             if (!CLASS_ROLES[playerClass]) return false;
             return CLASS_ROLES[playerClass].includes(role);
         }
 
-        // Utility: Format time from various formats
         function formatTime(timeVal) {
             if (!timeVal) return '??:??';
-            
-            // If it's already HH:MM format
             if (typeof timeVal === 'string' && /^\d{2}:\d{2}$/.test(timeVal)) {
                 return timeVal;
             }
-            
-            // If it's an ISO date string or Date object
             try {
                 let date;
                 if (typeof timeVal === 'string') {
@@ -772,9 +726,7 @@
                 } else {
                     return String(timeVal);
                 }
-                
                 if (isNaN(date.getTime())) return String(timeVal);
-                
                 const hours = date.getUTCHours().toString().padStart(2, '0');
                 const mins = date.getUTCMinutes().toString().padStart(2, '0');
                 return `${hours}:${mins}`;
@@ -783,7 +735,6 @@
             }
         }
 
-        // Utility: Get role icon
         function getRoleIcon(role) {
             if (!role) return '';
             const r = role.toLowerCase();
@@ -808,7 +759,6 @@
                 endHourSelect.add(new Option(time, time));
             }
         }
-        // Add 23:59
         startHourSelect.add(new Option('23:59', '23:59'));
         endHourSelect.add(new Option('23:59', '23:59'));
 
@@ -824,14 +774,12 @@
             if (len >= 24) charCount.classList.add('error');
         });
 
-        // Class selection -> Update role dropdown
+        // Class -> Role dropdown
         const classSelect = document.getElementById('playerClass');
         const roleSelect = document.getElementById('role');
 
         classSelect.addEventListener('change', () => {
             const selectedClass = classSelect.value;
-            
-            // Clear existing options
             roleSelect.innerHTML = '';
             
             if (!selectedClass) {
@@ -849,7 +797,7 @@
             });
         });
 
-        // Tab switching
+        // Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -866,18 +814,21 @@
             container.innerHTML = '<div class="loading"><span class="spinner"></span>Loading signups...</div>';
             
             try {
-                const response = await fetch(SCRIPT_URL, {
+                const response = await fetch(`${SCRIPT_URL}?key=${SECRET_KEY}`, {
                     method: 'GET',
                     mode: 'cors',
                 });
                 allData = await response.json();
+                if (allData.error) {
+                    container.innerHTML = '<div class="no-data">Access denied.</div>';
+                    return;
+                }
                 renderResults();
             } catch (error) {
                 container.innerHTML = '<div class="no-data">Unable to load data. Try refreshing.</div>';
             }
         }
 
-        // Render results table with buckets
         function renderResults() {
             const container = document.getElementById('resultsContainer');
             const dayData = allData[currentDay];
@@ -887,7 +838,6 @@
                 return;
             }
 
-            // Parse and sort data
             const players = [];
             for (let i = 1; i < dayData.length; i++) {
                 const row = dayData[i];
@@ -902,7 +852,6 @@
                 });
             }
 
-            // Sort by start time, then end time
             players.sort((a, b) => {
                 const aStart = formatTime(a.start);
                 const bStart = formatTime(b.start);
@@ -910,14 +859,10 @@
                 return formatTime(a.end).localeCompare(formatTime(b.end));
             });
 
-            // Split into buckets
             const searching = players.filter(p => p.status !== 'Found Group');
             const found = players.filter(p => p.status === 'Found Group');
 
-            let html = '';
-
-            // Searching bucket
-            html += `
+            let html = `
                 <div class="bucket">
                     <div class="bucket-header searching">
                         🔍 Looking for Group
@@ -925,10 +870,6 @@
                     </div>
                     ${searching.length > 0 ? renderTable(searching) : '<div class="no-data">No one searching</div>'}
                 </div>
-            `;
-
-            // Found bucket
-            html += `
                 <div class="bucket">
                     <div class="bucket-header found">
                         ✓ Found Group
@@ -988,7 +929,7 @@
             return html;
         }
 
-        // Confirmation modal
+        // Modal
         const modal = document.getElementById('confirmModal');
         const modalAction = document.getElementById('modalAction');
         const modalConfirm = document.getElementById('modalConfirm');
@@ -997,7 +938,6 @@
         function confirmToggle(character, day, currentStatus) {
             const newStatus = currentStatus === 'Found Group' ? 'Searching' : 'Found Group';
             pendingStatusChange = { character, day, currentStatus, newStatus };
-            
             modalAction.innerHTML = `Change <strong>${sanitize(character)}</strong> to <strong>${newStatus}</strong>?`;
             modal.classList.add('active');
         }
@@ -1009,13 +949,11 @@
 
         modalConfirm.addEventListener('click', async () => {
             if (!pendingStatusChange) return;
-            
             modal.classList.remove('active');
             await toggleStatus(pendingStatusChange.character, pendingStatusChange.day, pendingStatusChange.currentStatus);
             pendingStatusChange = null;
         });
 
-        // Close modal on overlay click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.classList.remove('active');
@@ -1023,7 +961,6 @@
             }
         });
 
-        // Toggle status
         async function toggleStatus(character, day, currentStatus) {
             const newStatus = currentStatus === 'Found Group' ? 'Searching' : 'Found Group';
             
@@ -1037,11 +974,10 @@
                         character: character,
                         day: day,
                         status: newStatus,
-                        password: 'raidcore'
+                        key: SECRET_KEY
                     })
                 });
 
-                // Update local data and re-render
                 const dayData = allData[day];
                 for (let i = 1; i < dayData.length; i++) {
                     if (dayData[i][1] === character) {
@@ -1056,7 +992,7 @@
             }
         }
 
-        // Form submission
+        // Form submit
         const form = document.getElementById('signupForm');
         const submitBtn = document.getElementById('submitBtn');
         const statusMessage = document.getElementById('statusMessage');
@@ -1069,11 +1005,9 @@
             const role = document.getElementById('role').value;
             const startHour = document.getElementById('startHour').value;
             const endHour = document.getElementById('endHour').value;
-            const password = document.getElementById('password').value;
 
-            // Validation
             if (!isValidCharName(charName)) {
-                statusMessage.textContent = 'Invalid character name. Use only letters, numbers, spaces, dashes (max 24 chars).';
+                statusMessage.textContent = 'Invalid character name. Letters, numbers, spaces, dashes only (max 24).';
                 statusMessage.className = 'status-message error';
                 return;
             }
@@ -1090,12 +1024,6 @@
                 return;
             }
 
-            if (!password) {
-                statusMessage.textContent = 'Please enter the guild password.';
-                statusMessage.className = 'status-message error';
-                return;
-            }
-
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner"></span>';
             statusMessage.className = 'status-message';
@@ -1108,7 +1036,7 @@
                 day: currentDay,
                 startHour: startHour,
                 endHour: endHour,
-                password: password
+                key: SECRET_KEY
             };
 
             try {
@@ -1122,7 +1050,6 @@
                 statusMessage.textContent = `${sanitize(formData.character)} signed up for ${currentDay}!`;
                 statusMessage.className = 'status-message success';
                 
-                // Add to local data for immediate display
                 if (!allData[currentDay]) allData[currentDay] = [['Timestamp', 'Character', 'Class', 'Role', 'Start', 'End', 'Status']];
                 allData[currentDay].push([
                     new Date().toISOString(),
@@ -1135,7 +1062,6 @@
                 ]);
                 renderResults();
                 
-                // Reset form but keep password
                 document.getElementById('character').value = '';
                 document.getElementById('playerClass').value = '';
                 roleSelect.innerHTML = '<option value="">Select class first</option>';
@@ -1154,10 +1080,7 @@
             submitBtn.innerHTML = 'Submit';
         });
 
-        // Refresh button
         document.getElementById('refreshBtn').addEventListener('click', loadData);
-
-        // Initial load
         loadData();
     </script>
 </body>
