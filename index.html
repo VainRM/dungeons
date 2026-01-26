@@ -229,6 +229,11 @@
             padding-right: 36px;
         }
 
+        select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .char-count {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -647,13 +652,8 @@
 
                 <div class="form-group">
                     <label for="role">Role</label>
-                    <select id="role" name="role" required>
-                        <option value="">Select role</option>
-                        <option value="Tank">Tank</option>
-                        <option value="Healer">Healer</option>
-                        <option value="DPS">DPS</option>
-                        <option value="Tank / DPS">Tank / DPS</option>
-                        <option value="Healer / DPS">Healer / DPS</option>
+                    <select id="role" name="role" required disabled>
+                        <option value="">Select class first</option>
                     </select>
                 </div>
 
@@ -720,6 +720,19 @@
         let allData = {};
         let pendingStatusChange = null;
 
+        // TBC Class -> Role mapping
+        const CLASS_ROLES = {
+            'Warrior':  ['Tank', 'DPS', 'Tank / DPS'],
+            'Paladin':  ['Tank', 'Healer', 'DPS', 'Tank / DPS', 'Healer / DPS', 'Tank / Healer', 'Tank / Healer / DPS'],
+            'Hunter':   ['DPS'],
+            'Rogue':    ['DPS'],
+            'Priest':   ['Healer', 'DPS', 'Healer / DPS'],
+            'Shaman':   ['Healer', 'DPS', 'Healer / DPS'],
+            'Mage':     ['DPS'],
+            'Warlock':  ['DPS'],
+            'Druid':    ['Tank', 'Healer', 'DPS', 'Tank / DPS', 'Healer / DPS', 'Tank / Healer', 'Tank / Healer / DPS']
+        };
+
         // Utility: Sanitize string for safe HTML display
         function sanitize(str) {
             if (!str) return '';
@@ -732,6 +745,12 @@
         function isValidCharName(name) {
             if (!name || name.length > 24) return false;
             return /^[A-Za-z0-9\s\-]+$/.test(name);
+        }
+
+        // Utility: Validate class/role combo
+        function isValidClassRole(playerClass, role) {
+            if (!CLASS_ROLES[playerClass]) return false;
+            return CLASS_ROLES[playerClass].includes(role);
         }
 
         // Utility: Format time from various formats
@@ -768,6 +787,8 @@
         function getRoleIcon(role) {
             if (!role) return '';
             const r = role.toLowerCase();
+            if (r.includes('tank') && r.includes('healer') && r.includes('dps')) return '🛡️💚⚔️';
+            if (r.includes('tank') && r.includes('healer')) return '🛡️💚';
             if (r.includes('tank') && r.includes('dps')) return '🛡️⚔️';
             if (r.includes('healer') && r.includes('dps')) return '💚⚔️';
             if (r.includes('tank')) return '🛡️';
@@ -801,6 +822,31 @@
             charCount.className = 'char-count';
             if (len >= 20) charCount.classList.add('warning');
             if (len >= 24) charCount.classList.add('error');
+        });
+
+        // Class selection -> Update role dropdown
+        const classSelect = document.getElementById('playerClass');
+        const roleSelect = document.getElementById('role');
+
+        classSelect.addEventListener('change', () => {
+            const selectedClass = classSelect.value;
+            
+            // Clear existing options
+            roleSelect.innerHTML = '';
+            
+            if (!selectedClass) {
+                roleSelect.add(new Option('Select class first', ''));
+                roleSelect.disabled = true;
+                return;
+            }
+            
+            roleSelect.disabled = false;
+            roleSelect.add(new Option('Select role', ''));
+            
+            const roles = CLASS_ROLES[selectedClass] || [];
+            roles.forEach(role => {
+                roleSelect.add(new Option(role, role));
+            });
         });
 
         // Tab switching
@@ -1038,6 +1084,12 @@
                 return;
             }
 
+            if (!isValidClassRole(playerClass, role)) {
+                statusMessage.textContent = `Invalid role for ${playerClass}. Nice try.`;
+                statusMessage.className = 'status-message error';
+                return;
+            }
+
             if (!password) {
                 statusMessage.textContent = 'Please enter the guild password.';
                 statusMessage.className = 'status-message error';
@@ -1086,7 +1138,8 @@
                 // Reset form but keep password
                 document.getElementById('character').value = '';
                 document.getElementById('playerClass').value = '';
-                document.getElementById('role').value = '';
+                roleSelect.innerHTML = '<option value="">Select class first</option>';
+                roleSelect.disabled = true;
                 document.getElementById('startHour').value = '';
                 document.getElementById('endHour').value = '';
                 charCount.textContent = '0 / 24';
