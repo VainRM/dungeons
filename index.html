@@ -188,6 +188,16 @@
             margin-bottom: 6px;
         }
 
+        .label-hint {
+            font-family: 'Crimson Text', serif;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+            letter-spacing: 0;
+            text-transform: none;
+            margin-left: 8px;
+        }
+
         input, select {
             width: 100%;
             padding: 12px 14px;
@@ -663,6 +673,14 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="password">Guild Password <span class="label-hint">(ask in Discord)</span></label>
+                    <input type="password" id="password" name="password" 
+                           placeholder="Enter guild password" 
+                           required 
+                           autocomplete="off">
+                </div>
+
                 <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
                 <div id="statusMessage" class="status-message"></div>
             </form>
@@ -972,7 +990,8 @@
                         action: 'updateStatus',
                         character: character,
                         day: day,
-                        status: newStatus
+                        status: newStatus,
+                        password: 'raidcore'
                     })
                 });
 
@@ -1004,6 +1023,7 @@
             const role = document.getElementById('role').value;
             const startHour = document.getElementById('startHour').value;
             const endHour = document.getElementById('endHour').value;
+            const password = document.getElementById('password').value;
 
             // Validation
             if (!isValidCharName(charName)) {
@@ -1014,6 +1034,12 @@
 
             if (!playerClass || !role || !startHour || !endHour) {
                 statusMessage.textContent = 'Please fill in all fields.';
+                statusMessage.className = 'status-message error';
+                return;
+            }
+
+            if (!password) {
+                statusMessage.textContent = 'Please enter the guild password.';
                 statusMessage.className = 'status-message error';
                 return;
             }
@@ -1029,7 +1055,8 @@
                 role: role,
                 day: currentDay,
                 startHour: startHour,
-                endHour: endHour
+                endHour: endHour,
+                password: password
             };
 
             try {
@@ -1056,7 +1083,12 @@
                 ]);
                 renderResults();
                 
-                form.reset();
+                // Reset form but keep password
+                document.getElementById('character').value = '';
+                document.getElementById('playerClass').value = '';
+                document.getElementById('role').value = '';
+                document.getElementById('startHour').value = '';
+                document.getElementById('endHour').value = '';
                 charCount.textContent = '0 / 24';
                 charCount.className = 'char-count';
                 
