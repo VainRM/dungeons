@@ -21,10 +21,20 @@
             --bg-input: #252525;
             --text-light: #e8e4d9;
             --text-muted: #8a8578;
-            --red-accent: #8b1a1a;
             --border-subtle: #333;
             --green: #27ae60;
             --orange: #e67e22;
+            
+            /* TBC Class Colors */
+            --warrior: #C79C6E;
+            --paladin: #F58CBA;
+            --hunter: #ABD473;
+            --rogue: #FFF569;
+            --priest: #FFFFFF;
+            --shaman: #0070DE;
+            --mage: #69CCF0;
+            --warlock: #9482C9;
+            --druid: #FF7D0A;
         }
 
         body {
@@ -197,12 +207,31 @@
             box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.1);
         }
 
+        input:invalid:not(:placeholder-shown) {
+            border-color: #e74c3c;
+        }
+
         select {
             cursor: pointer;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8578' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
             padding-right: 36px;
+        }
+
+        .char-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .char-count.warning {
+            color: var(--orange);
+        }
+
+        .char-count.error {
+            color: #e74c3c;
         }
 
         .time-row {
@@ -305,6 +334,47 @@
             color: var(--text-light);
         }
 
+        /* Bucket sections */
+        .bucket {
+            margin-bottom: 30px;
+        }
+
+        .bucket:last-child {
+            margin-bottom: 0;
+        }
+
+        .bucket-header {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bucket-header.searching {
+            background: rgba(230, 126, 34, 0.15);
+            border: 1px solid rgba(230, 126, 34, 0.3);
+            color: var(--orange);
+        }
+
+        .bucket-header.found {
+            background: rgba(39, 174, 96, 0.15);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: var(--green);
+        }
+
+        .bucket-count {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
         /* Table */
         .results-table {
             width: 100%;
@@ -337,6 +407,39 @@
             border-bottom: none;
         }
 
+        /* Class badges */
+        .class-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .class-warrior { background: rgba(199, 156, 110, 0.2); border: 1px solid var(--warrior); color: var(--warrior); }
+        .class-paladin { background: rgba(245, 140, 186, 0.2); border: 1px solid var(--paladin); color: var(--paladin); }
+        .class-hunter { background: rgba(171, 212, 115, 0.2); border: 1px solid var(--hunter); color: var(--hunter); }
+        .class-rogue { background: rgba(255, 245, 105, 0.2); border: 1px solid var(--rogue); color: var(--rogue); }
+        .class-priest { background: rgba(255, 255, 255, 0.15); border: 1px solid var(--priest); color: var(--priest); }
+        .class-shaman { background: rgba(0, 112, 222, 0.2); border: 1px solid var(--shaman); color: var(--shaman); }
+        .class-mage { background: rgba(105, 204, 240, 0.2); border: 1px solid var(--mage); color: var(--mage); }
+        .class-warlock { background: rgba(148, 130, 201, 0.2); border: 1px solid var(--warlock); color: var(--warlock); }
+        .class-druid { background: rgba(255, 125, 10, 0.2); border: 1px solid var(--druid); color: var(--druid); }
+
+        /* Role icons */
+        .role-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .role-icon {
+            font-size: 1.1rem;
+        }
+
         /* Status badges */
         .status-badge {
             display: inline-block;
@@ -366,21 +469,10 @@
             transform: scale(1.05);
         }
 
-        /* Class colors */
-        .class-warrior { color: #C79C6E; }
-        .class-paladin { color: #F58CBA; }
-        .class-hunter { color: #ABD473; }
-        .class-rogue { color: #FFF569; }
-        .class-priest { color: #FFFFFF; }
-        .class-shaman { color: #0070DE; }
-        .class-mage { color: #69CCF0; }
-        .class-warlock { color: #9482C9; }
-        .class-druid { color: #FF7D0A; }
-
         .no-data {
             text-align: center;
             color: var(--text-muted);
-            padding: 40px;
+            padding: 20px;
             font-style: italic;
         }
 
@@ -416,10 +508,83 @@
 
         /* Responsive table */
         @media (max-width: 700px) {
-            .results-table th:nth-child(5),
-            .results-table td:nth-child(5) {
+            .results-table th:nth-child(4),
+            .results-table td:nth-child(4) {
                 display: none;
             }
+        }
+
+        /* Confirmation modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--gold-dark);
+            border-radius: 4px;
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn.confirm {
+            background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            color: var(--bg-dark);
+            border: none;
+        }
+
+        .modal-btn.cancel {
+            background: var(--bg-input);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -440,12 +605,18 @@
         </div>
 
         <div class="main-content">
-            <form id="signupForm" class="form-card">
+            <form id="signupForm" class="form-card" novalidate>
                 <h2 class="form-title">Sign Up</h2>
                 
                 <div class="form-group">
                     <label for="character">Character Name</label>
-                    <input type="text" id="character" name="character" placeholder="Enter character name" required>
+                    <input type="text" id="character" name="character" 
+                           placeholder="Enter character name" 
+                           required 
+                           maxlength="24" 
+                           pattern="[A-Za-z0-9\s\-]+"
+                           title="Letters, numbers, spaces, and dashes only">
+                    <div class="char-count" id="charCount">0 / 24</div>
                 </div>
 
                 <div class="form-group">
@@ -508,7 +679,20 @@
             </div>
         </div>
 
-        <p class="footer">Click on a player's status to toggle between Searching and Found Group</p>
+        <p class="footer">Click on your status to toggle between Searching and Found Group</p>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <h3>⚠️ Confirm Status Change</h3>
+            <p>Please don't grief — only change <strong>your own</strong> character's status.</p>
+            <p id="modalAction"></p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+                <button class="modal-btn confirm" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -516,6 +700,63 @@
         
         let currentDay = 'Friday';
         let allData = {};
+        let pendingStatusChange = null;
+
+        // Utility: Sanitize string for safe HTML display
+        function sanitize(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Utility: Validate character name
+        function isValidCharName(name) {
+            if (!name || name.length > 24) return false;
+            return /^[A-Za-z0-9\s\-]+$/.test(name);
+        }
+
+        // Utility: Format time from various formats
+        function formatTime(timeVal) {
+            if (!timeVal) return '??:??';
+            
+            // If it's already HH:MM format
+            if (typeof timeVal === 'string' && /^\d{2}:\d{2}$/.test(timeVal)) {
+                return timeVal;
+            }
+            
+            // If it's an ISO date string or Date object
+            try {
+                let date;
+                if (typeof timeVal === 'string') {
+                    date = new Date(timeVal);
+                } else if (timeVal instanceof Date) {
+                    date = timeVal;
+                } else {
+                    return String(timeVal);
+                }
+                
+                if (isNaN(date.getTime())) return String(timeVal);
+                
+                const hours = date.getUTCHours().toString().padStart(2, '0');
+                const mins = date.getUTCMinutes().toString().padStart(2, '0');
+                return `${hours}:${mins}`;
+            } catch (e) {
+                return String(timeVal);
+            }
+        }
+
+        // Utility: Get role icon
+        function getRoleIcon(role) {
+            if (!role) return '';
+            const r = role.toLowerCase();
+            if (r.includes('tank') && r.includes('dps')) return '🛡️⚔️';
+            if (r.includes('healer') && r.includes('dps')) return '💚⚔️';
+            if (r.includes('tank')) return '🛡️';
+            if (r.includes('healer')) return '💚';
+            if (r.includes('dps')) return '⚔️';
+            return '';
+        }
 
         // Populate time dropdowns
         const startHourSelect = document.getElementById('startHour');
@@ -528,6 +769,21 @@
                 endHourSelect.add(new Option(time, time));
             }
         }
+        // Add 23:59
+        startHourSelect.add(new Option('23:59', '23:59'));
+        endHourSelect.add(new Option('23:59', '23:59'));
+
+        // Character count
+        const charInput = document.getElementById('character');
+        const charCount = document.getElementById('charCount');
+        
+        charInput.addEventListener('input', () => {
+            const len = charInput.value.length;
+            charCount.textContent = `${len} / 24`;
+            charCount.className = 'char-count';
+            if (len >= 20) charCount.classList.add('warning');
+            if (len >= 24) charCount.classList.add('error');
+        });
 
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -553,20 +809,75 @@
                 allData = await response.json();
                 renderResults();
             } catch (error) {
-                container.innerHTML = '<div class="no-data">Unable to load data. Submit a signup and refresh to see results.</div>';
+                container.innerHTML = '<div class="no-data">Unable to load data. Try refreshing.</div>';
             }
         }
 
-        // Render results table
+        // Render results table with buckets
         function renderResults() {
             const container = document.getElementById('resultsContainer');
             const dayData = allData[currentDay];
 
             if (!dayData || dayData.length <= 1) {
-                container.innerHTML = '<div class="no-data">No signups yet for ' + currentDay + '</div>';
+                container.innerHTML = '<div class="no-data">No signups yet for ' + sanitize(currentDay) + '</div>';
                 return;
             }
 
+            // Parse and sort data
+            const players = [];
+            for (let i = 1; i < dayData.length; i++) {
+                const row = dayData[i];
+                players.push({
+                    character: row[1] || '',
+                    playerClass: row[2] || '',
+                    role: row[3] || '',
+                    start: row[4] || '',
+                    end: row[5] || '',
+                    status: row[6] || 'Searching',
+                    index: i
+                });
+            }
+
+            // Sort by start time, then end time
+            players.sort((a, b) => {
+                const aStart = formatTime(a.start);
+                const bStart = formatTime(b.start);
+                if (aStart !== bStart) return aStart.localeCompare(bStart);
+                return formatTime(a.end).localeCompare(formatTime(b.end));
+            });
+
+            // Split into buckets
+            const searching = players.filter(p => p.status !== 'Found Group');
+            const found = players.filter(p => p.status === 'Found Group');
+
+            let html = '';
+
+            // Searching bucket
+            html += `
+                <div class="bucket">
+                    <div class="bucket-header searching">
+                        🔍 Looking for Group
+                        <span class="bucket-count">${searching.length}</span>
+                    </div>
+                    ${searching.length > 0 ? renderTable(searching) : '<div class="no-data">No one searching</div>'}
+                </div>
+            `;
+
+            // Found bucket
+            html += `
+                <div class="bucket">
+                    <div class="bucket-header found">
+                        ✓ Found Group
+                        <span class="bucket-count">${found.length}</span>
+                    </div>
+                    ${found.length > 0 ? renderTable(found) : '<div class="no-data">No one has found a group yet</div>'}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function renderTable(players) {
             let html = `
                 <table class="results-table">
                     <thead>
@@ -581,30 +892,28 @@
                     <tbody>
             `;
 
-            // Skip header row (index 0)
-            for (let i = 1; i < dayData.length; i++) {
-                const row = dayData[i];
-                const character = row[1] || '';
-                const playerClass = row[2] || '';
-                const role = row[3] || '';
-                const start = row[4] || '';
-                const end = row[5] || '';
-                const status = row[6] || 'Searching';
-
-                const classColor = 'class-' + playerClass.toLowerCase();
-                const statusClass = status === 'Found Group' ? 'status-found' : 'status-searching';
+            for (const player of players) {
+                const classLower = player.playerClass.toLowerCase();
+                const statusClass = player.status === 'Found Group' ? 'status-found' : 'status-searching';
+                const startFormatted = formatTime(player.start);
+                const endFormatted = formatTime(player.end);
 
                 html += `
                     <tr>
-                        <td>${character}</td>
-                        <td class="${classColor}">${playerClass}</td>
-                        <td>${role}</td>
-                        <td>${start} - ${end}</td>
+                        <td>${sanitize(player.character)}</td>
+                        <td><span class="class-badge class-${sanitize(classLower)}">${sanitize(player.playerClass)}</span></td>
+                        <td>
+                            <div class="role-cell">
+                                <span class="role-icon">${getRoleIcon(player.role)}</span>
+                                ${sanitize(player.role)}
+                            </div>
+                        </td>
+                        <td>${startFormatted} - ${endFormatted}</td>
                         <td>
                             <span class="status-badge ${statusClass}" 
-                                  onclick="toggleStatus('${character}', '${currentDay}', '${status}')"
+                                  onclick="confirmToggle('${sanitize(player.character).replace(/'/g, "\\'")}', '${currentDay}', '${player.status}')"
                                   title="Click to change status">
-                                ${status === 'Found Group' ? 'Found' : 'Searching'}
+                                ${player.status === 'Found Group' ? 'Found' : 'Searching'}
                             </span>
                         </td>
                     </tr>
@@ -612,8 +921,43 @@
             }
 
             html += '</tbody></table>';
-            container.innerHTML = html;
+            return html;
         }
+
+        // Confirmation modal
+        const modal = document.getElementById('confirmModal');
+        const modalAction = document.getElementById('modalAction');
+        const modalConfirm = document.getElementById('modalConfirm');
+        const modalCancel = document.getElementById('modalCancel');
+
+        function confirmToggle(character, day, currentStatus) {
+            const newStatus = currentStatus === 'Found Group' ? 'Searching' : 'Found Group';
+            pendingStatusChange = { character, day, currentStatus, newStatus };
+            
+            modalAction.innerHTML = `Change <strong>${sanitize(character)}</strong> to <strong>${newStatus}</strong>?`;
+            modal.classList.add('active');
+        }
+
+        modalCancel.addEventListener('click', () => {
+            modal.classList.remove('active');
+            pendingStatusChange = null;
+        });
+
+        modalConfirm.addEventListener('click', async () => {
+            if (!pendingStatusChange) return;
+            
+            modal.classList.remove('active');
+            await toggleStatus(pendingStatusChange.character, pendingStatusChange.day, pendingStatusChange.currentStatus);
+            pendingStatusChange = null;
+        });
+
+        // Close modal on overlay click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                pendingStatusChange = null;
+            }
+        });
 
         // Toggle status
         async function toggleStatus(character, day, currentStatus) {
@@ -655,18 +999,37 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const charName = document.getElementById('character').value.trim();
+            const playerClass = document.getElementById('playerClass').value;
+            const role = document.getElementById('role').value;
+            const startHour = document.getElementById('startHour').value;
+            const endHour = document.getElementById('endHour').value;
+
+            // Validation
+            if (!isValidCharName(charName)) {
+                statusMessage.textContent = 'Invalid character name. Use only letters, numbers, spaces, dashes (max 24 chars).';
+                statusMessage.className = 'status-message error';
+                return;
+            }
+
+            if (!playerClass || !role || !startHour || !endHour) {
+                statusMessage.textContent = 'Please fill in all fields.';
+                statusMessage.className = 'status-message error';
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner"></span>';
             statusMessage.className = 'status-message';
             statusMessage.style.display = 'none';
 
             const formData = {
-                character: document.getElementById('character').value,
-                playerClass: document.getElementById('playerClass').value,
-                role: document.getElementById('role').value,
+                character: charName,
+                playerClass: playerClass,
+                role: role,
                 day: currentDay,
-                startHour: document.getElementById('startHour').value,
-                endHour: document.getElementById('endHour').value
+                startHour: startHour,
+                endHour: endHour
             };
 
             try {
@@ -677,7 +1040,7 @@
                     body: JSON.stringify(formData)
                 });
 
-                statusMessage.textContent = `${formData.character} signed up for ${currentDay}!`;
+                statusMessage.textContent = `${sanitize(formData.character)} signed up for ${currentDay}!`;
                 statusMessage.className = 'status-message success';
                 
                 // Add to local data for immediate display
@@ -694,6 +1057,8 @@
                 renderResults();
                 
                 form.reset();
+                charCount.textContent = '0 / 24';
+                charCount.className = 'char-count';
                 
             } catch (error) {
                 statusMessage.textContent = 'Something went wrong. Please try again.';
