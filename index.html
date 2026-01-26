@@ -512,7 +512,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_0xAPvcWLnE92W2gvVKsku4E97bSaMs310eq_8Ii_z3M4ckzsWBYyxQhcoyWCzZ-B/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoITOviqZBlTCvYpTKg0DsfYdDHWO7GJ0RbSzsna-CdmRfznrM-WS0Q1NDygirqD_BQg/exec';
         
         let currentDay = 'Friday';
         let allData = {};
@@ -546,8 +546,6 @@
             container.innerHTML = '<div class="loading"><span class="spinner"></span>Loading signups...</div>';
             
             try {
-                // Using JSONP-style fetch since we can't read no-cors responses
-                // We'll use an iframe trick or just show cached data
                 const response = await fetch(SCRIPT_URL, {
                     method: 'GET',
                     mode: 'cors',
@@ -555,7 +553,6 @@
                 allData = await response.json();
                 renderResults();
             } catch (error) {
-                // If CORS fails, show message
                 container.innerHTML = '<div class="no-data">Unable to load data. Submit a signup and refresh to see results.</div>';
             }
         }
