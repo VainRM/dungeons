@@ -462,6 +462,11 @@
             font-style: italic;
         }
 
+        .has-notes {
+            cursor: help;
+            border-bottom: 1px dotted var(--gold-dark);
+        }
+
         .loading {
             text-align: center;
             color: var(--text-muted);
@@ -654,6 +659,14 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="notes">Notes <span class="label-hint">(optional)</span></label>
+                    <input type="text" id="notes" name="notes" 
+                           placeholder="e.g. Have summons, need tank"
+                           maxlength="100">
+                    <div class="char-count" id="notesCount">0 / 100</div>
+                </div>
+
                 <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
                 <div id="statusMessage" class="status-message"></div>
             </form>
@@ -724,25 +737,9 @@
 
         function formatTime(timeVal) {
             if (!timeVal) return '??:??';
-            if (typeof timeVal === 'string' && /^\d{2}:\d{2}$/.test(timeVal)) {
-                return timeVal;
-            }
-            try {
-                let date;
-                if (typeof timeVal === 'string') {
-                    date = new Date(timeVal);
-                } else if (timeVal instanceof Date) {
-                    date = timeVal;
-                } else {
-                    return String(timeVal);
-                }
-                if (isNaN(date.getTime())) return String(timeVal);
-                const hours = date.getHours().toString().padStart(2, '0');
-                const mins = date.getMinutes().toString().padStart(2, '0');
-                return `${hours}:${mins}`;
-            } catch (e) {
-                return String(timeVal);
-            }
+            const str = String(timeVal).replace(/^'/, '');
+            if (/^\d{2}:\d{2}$/.test(str)) return str;
+            return str;
         }
 
         function getRoleIcon(role) {
@@ -782,6 +779,18 @@
             charCount.className = 'char-count';
             if (len >= 20) charCount.classList.add('warning');
             if (len >= 24) charCount.classList.add('error');
+        });
+
+        // Notes count
+        const notesInput = document.getElementById('notes');
+        const notesCount = document.getElementById('notesCount');
+        
+        notesInput.addEventListener('input', () => {
+            const len = notesInput.value.length;
+            notesCount.textContent = `${len} / 100`;
+            notesCount.className = 'char-count';
+            if (len >= 80) notesCount.classList.add('warning');
+            if (len >= 100) notesCount.classList.add('error');
         });
 
         // Class -> Role dropdown
@@ -870,6 +879,7 @@
                     start: row[4] || '',
                     end: row[5] || '',
                     status: row[6] || 'Searching',
+                    notes: row[7] || '',
                     index: i
                 });
             }
@@ -912,7 +922,7 @@
                             <th>Character</th>
                             <th>Class</th>
                             <th>Role</th>
-                            <th>Time (ST)</th>
+                            <th>Time</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -925,9 +935,11 @@
                 const startFormatted = formatTime(player.start);
                 const endFormatted = formatTime(player.end);
 
+                const notesAttr = player.notes ? `title="${sanitize(player.notes)}" class="has-notes"` : '';
+                
                 html += `
                     <tr>
-                        <td>${sanitize(player.character)}</td>
+                        <td><span ${notesAttr}>${sanitize(player.character)}${player.notes ? ' 📝' : ''}</span></td>
                         <td><span class="class-badge class-${sanitize(classLower)}">${sanitize(player.playerClass)}</span></td>
                         <td>
                             <div class="role-cell">
@@ -1028,6 +1040,7 @@
             const day = document.getElementById('day').value;
             const startHour = document.getElementById('startHour').value;
             const endHour = document.getElementById('endHour').value;
+            const notes = document.getElementById('notes').value.trim().substring(0, 100);
 
             if (!isValidCharName(charName)) {
                 statusMessage.textContent = 'Invalid character name. Letters, numbers, spaces, dashes only (max 24).';
@@ -1059,6 +1072,7 @@
                 day: day,
                 startHour: startHour,
                 endHour: endHour,
+                notes: notes,
                 key: SECRET_KEY
             };
 
@@ -1074,7 +1088,7 @@
                 statusMessage.className = 'status-message success';
                 
                 // Add to local data for immediate display
-                if (!allData[day]) allData[day] = [['Timestamp', 'Character', 'Class', 'Role', 'Start', 'End', 'Status']];
+                if (!allData[day]) allData[day] = [['Timestamp', 'Character', 'Class', 'Role', 'Start', 'End', 'Status', 'Notes']];
                 allData[day].push([
                     new Date().toISOString(),
                     formData.character,
@@ -1082,7 +1096,8 @@
                     formData.role,
                     formData.startHour,
                     formData.endHour,
-                    'Searching'
+                    'Searching',
+                    formData.notes
                 ]);
                 
                 // Switch to the day they signed up for
@@ -1096,8 +1111,11 @@
                 document.getElementById('day').value = '';
                 document.getElementById('startHour').value = '';
                 document.getElementById('endHour').value = '';
+                document.getElementById('notes').value = '';
                 charCount.textContent = '0 / 24';
                 charCount.className = 'char-count';
+                notesCount.textContent = '0 / 100';
+                notesCount.className = 'char-count';
                 
             } catch (error) {
                 statusMessage.textContent = 'Something went wrong. Please try again.';
