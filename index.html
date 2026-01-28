@@ -465,6 +465,57 @@
         .has-notes {
             cursor: help;
             border-bottom: 1px dotted var(--gold-dark);
+            position: relative;
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 0;
+            min-width: 200px;
+            max-width: 280px;
+            background: var(--bg-card);
+            border: 1px solid var(--gold-dark);
+            border-radius: 4px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            line-height: 1.4;
+        }
+
+        .tooltip .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 20px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--gold-dark) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip .note-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .loading {
@@ -935,11 +986,13 @@
                 const startFormatted = formatTime(player.start);
                 const endFormatted = formatTime(player.end);
 
-                const notesAttr = player.notes ? `title="${sanitize(player.notes)}" class="has-notes"` : '';
+                const tooltipHtml = player.notes 
+                    ? `<span class="tooltip">${sanitize(player.character)} 📝<span class="tooltip-text"><span class="note-label">Note</span>${sanitize(player.notes)}</span></span>` 
+                    : sanitize(player.character);
                 
                 html += `
                     <tr>
-                        <td><span ${notesAttr}>${sanitize(player.character)}${player.notes ? ' 📝' : ''}</span></td>
+                        <td>${tooltipHtml}</td>
                         <td><span class="class-badge class-${sanitize(classLower)}">${sanitize(player.playerClass)}</span></td>
                         <td>
                             <div class="role-cell">
